@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Happy New Year 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        /* Body & Background */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #0f2027;
+            overflow: hidden;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Card */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            max-width: 420px;
+            width: 100%;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-bottom: 15px;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #fff; }
+            to { text-shadow: 0 0 20px #ff0, 0 0 30px #ff0, 0 0 40px #ff0; }
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #ccc;
+            outline: none;
+            font-size: 16px;
+            margin-bottom: 10px;
+            transition: border-color 0.2s ease;
+        }
+
+        input.invalid {
+            border-color: #ff4d4d;
+        }
+
+        .error-message {
+            color: #ff4d4d;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        button {
+            width: 52%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #25D366;
+            background: linear-gradient(to right, #25D366 , #00c6ff);
+            color: white;
+            outline: none;
+            font-size: 16px;
+            cursor: pointer;
+           animation: gentleDance 2.8s
+           ease-in-out infinite;
+        }
+
+        @keyframes gentleDance {
+            0%{
+                transform: translateY(0)
+                scale(1);
+                box-shadow: 0 0 0 rgba(37,211,102,0.4);
+            }
+            40%{
+                transform: translateY(-4px)
+                scale(1.02);
+                box-shadow: 0 8px 18px rgba(37,211,102,0.35);
+            }
+            70%{
+                transform: translateY(0)
+                scale(1);
+                box-shadow: 0 4px 12px rgba(37,211,102,0.25);
+            }
+            100%{
+                transform: translateY(0)
+                scale(1);
+                box-shadow: 0 0 0 rgba(37,211,102,0.4);
+            }
+        }
+        
+
+        .footer {
+            margin-top: 20px;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        /* Canvas for fireworks */
+        canvas#fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #fff;
+            opacity: 0.8;
+            z-index: 1;
+            pointer-events: none;
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<div class="card">
+    <h1 id="mainMessage"></h1>
+    <p>Enter your name and send New Year wishes to others 🎆</p>
+
+    <input type="text" id="nameInput" placeholder="Enter your name">
+    <div class="error-message" id="errorMsg">Please enter your name using letters only (no numbers or symbols).</div>
+
+    <button onclick="wishOthers()">Wish Others on WhatsApp</button>
+
+    <div class="footer">
+        ✨ Spread love & joy in 2026 ✨
+    </div>
+</div>
+
+<script>
+    // Name from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromName = urlParams.get('from') || 'Paola';
+    const mainMessage = document.getElementById("mainMessage");
+    const nameInput = document.getElementById("nameInput");
+    const errorMsg = document.getElementById("errorMsg");
+
+    mainMessage.innerText = `${fromName} wishes you a Happy New Year 2026 🎉`;
+
+    // Real-time input validation
+    nameInput.addEventListener('input', () => {
+        const namePattern = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+        if (!namePattern.test(nameInput.value) && nameInput.value.trim() !== "") {
+            nameInput.classList.add('invalid');
+            errorMsg.style.display = 'block';
+        } else {
+            nameInput.classList.remove('invalid');
+            errorMsg.style.display = 'none';
+        }
+    });
+
+    function wishOthers() {
+        const name = nameInput.value.trim();
+        const namePattern = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+
+        if (name === "") {
+            errorMsg.innerText = "Please enter your name.";
+            errorMsg.style.display = 'block';
+            nameInput.classList.add('invalid');
+            return;
+        }
+
+        if (!namePattern.test(name)) {
+            errorMsg.innerText = "Please enter your name using letters only (no numbers or symbols).";
+            errorMsg.style.display = 'block';
+            nameInput.classList.add('invalid');
+            return;
+        }
+
+        const newLink = `${window.location.origin}${window.location.pathname}?from=${encodeURIComponent(name)}`;
+        const message = `${name} wishes you a Happy New Year 2026 🎉🎆\n\nClick the link below:\n${newLink}`;
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+
+        window.open(whatsappUrl, "_blank");
+    }
+
+    // Fireworks canvas
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    function random(min, max) { return Math.random() * (max - min) + min; }
+
+    class Particle {
+        constructor(x, y, color, speed, angle) {
+            this.x = x;
+            this.y = y;
+            this.color = color;
+            this.speed = speed;
+            this.angle = angle;
+            this.alpha = 1;
+        }
+        update() {
+            this.x += Math.cos(this.angle) * this.speed;
+            this.y += Math.sin(this.angle) * this.speed;
+            this.alpha -= 0.02;
+        }
+        draw() {
+            ctx.globalAlpha = this.alpha;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+    }
+
+    let particles = [];
+
+    function launchFirework() {
+        const x = random(100, canvas.width - 100);
+        const y = random(50, canvas.height / 2);
+        const colors = ['#ff4d4d','#ffcc00','#00ffcc','#ff66ff','#66ff66'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        for(let i=0;i<50;i++){
+            particles.push(new Particle(x, y, color, random(2,6), random(0,Math.PI*2)));
+        }
+    }
+
+    function animate() {
+        ctx.fillStyle = 'rgba(15,32,39,0.2)';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        for(let i=particles.length-1;i>=0;i--){
+            particles[i].update();
+            particles[i].draw();
+            if(particles[i].alpha <= 0) particles.splice(i,1);
+        }
+        requestAnimationFrame(animate);
+    }
+
+    setInterval(launchFirework, 800);
+    animate();
+
+    // Confetti
+    function createConfetti(){
+        const conf = document.createElement('div');
+        conf.className = 'confetti';
+        conf.style.left = Math.random()*window.innerWidth+'px';
+        conf.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 70%)`;
+        document.body.appendChild(conf);
+        setTimeout(()=>conf.remove(),3000);
+    }
+    setInterval(createConfetti,150);
+</script>
+
+</body>
+</html>
+
